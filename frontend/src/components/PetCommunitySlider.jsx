@@ -1,3 +1,4 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
@@ -14,7 +15,7 @@ const PetCommunitySlider = () => {
    useEffect(() => {
        const fetchEvents = async () => {
            try {
-               const res = await fetch('http://localhost:5000/api/events');
+               const res = await fetch(`${API_BASE}/api/events`);
                const data = await res.json();
                setEvents(data);
            } catch (err) {

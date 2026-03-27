@@ -1,3 +1,4 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapPin, Edit2, Phone, Mail } from 'lucide-react';
@@ -33,10 +34,10 @@ const Profile = () => {
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
         
-        const targetId = id;
-        if (!targetId) return;
+        const targetUsername = username;
+        if (!targetUsername) return;
 
-        const endpoint = `http://localhost:5000/api/profile/${targetId}`;
+        const endpoint = username === 'me' ? `${API_BASE}/api/profile/me` : `${API_BASE}/api/profile/${targetUsername}`;
         const res = await fetch(`${endpoint}?t=${Date.now()}`, { headers });
         if (res.ok) {
           const data = await res.json();
@@ -77,7 +78,7 @@ const Profile = () => {
     try {
       const userCache = JSON.parse(localStorage.getItem('petconnect_user') || '{}');
       const token = userCache.token;
-      const res = await fetch(`http://localhost:5000/api/friends/request`, {
+      const res = await fetch(`${API_BASE}/api/friends/request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ targetUserId: profileData.profile._id })

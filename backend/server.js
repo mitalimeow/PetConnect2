@@ -11,7 +11,11 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/petconnect'
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log('MongoDB Connection Error:', err));
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : ['http://localhost:5173', 'https://petconnect-deploy.vercel.app'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 
 // Routes
