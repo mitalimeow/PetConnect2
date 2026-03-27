@@ -8,7 +8,10 @@ const UserSchema = new mongoose.Schema({
   bannerImage: { type: String, default: '' },
   bio: { type: String, default: '' },
   location: { type: String, default: '' },
-  tags: [{ type: String }],
+  tags: [{ 
+    name: { type: String }, 
+    color: { type: String } 
+  }],
   notifications: [{ type: String }],
   phone: { type: String, default: '' },
   isPhonePublic: { type: Boolean, default: false },

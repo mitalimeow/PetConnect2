@@ -21,6 +21,8 @@ app.use('/api/friends', require('./routes/friendRoutes'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/pets', require('./routes/petRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/posts', require('./routes/postRoutes'));
 
 app.get('/api/user/me', require('./middleware/auth'), async (req, res) => {
   try {
