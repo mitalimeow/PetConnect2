@@ -107,8 +107,8 @@ const EditProfileModal = ({ isOpen, onClose, initialData, onSaveSuccess }) => {
       setOtpVerified(true);
       setFormData(prev => ({ ...prev, phone: phoneNumber }));
       showToast("Phone Verified dynamically via Firebase Auth bindings!", 'success');
-    // eslint-disable-next-line no-unused-vars
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       showToast("Invalid OTP Code provided", 'error');
     }
   };
