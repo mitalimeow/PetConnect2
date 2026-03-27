@@ -19,5 +19,6 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profile', require('./routes/profileRoutes'));
 app.use('/api/friends', require('./routes/friendRoutes')); 
 app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/events', require('./routes/events'));
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -9,6 +9,8 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import LostFound from './pages/LostFound';
 import EducationSection from './pages/Education';
+import Helpline from './pages/Helpline';
+import Community from './pages/Community';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
                 <Route path="/profile/:username" element={<Profile />} />
                 <Route path="/lost-found" element={<LostFound />} />
                 <Route path="/education/*" element={<EducationSection />} />
+                <Route path="/helpline" element={<Helpline />} />
+                <Route path="/community" element={<Community />} />
               </Routes>
             </main>
           </div>
