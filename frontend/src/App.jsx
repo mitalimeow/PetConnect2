@@ -8,6 +8,9 @@ import About from './pages/About';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import LostFound from './pages/LostFound';
+import EducationSection from './pages/Education';
+import Applications from './pages/Applications';
+import AdminPanel from './pages/AdminPanel';
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile/:username" element={<Profile />} />
                 <Route path="/lost-found" element={<LostFound />} />
+                <Route path="/education/*" element={<EducationSection />} />
+                <Route path="/applications" element={<Applications />} />
+                <Route path="/admin-panel" element={<AdminPanel />} />
               </Routes>
             </main>
           </div>
