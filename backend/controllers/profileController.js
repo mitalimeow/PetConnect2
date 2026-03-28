@@ -26,10 +26,16 @@ exports.getMe = async (req, res) => {
   }
 };
 
-exports.getProfileByUsername = async (req, res) => {
+exports.getProfileById = async (req, res) => {
   try {
-    console.log("Frontend fetching profile mapping for username:", req.params.username);
-    const fetchUser = User.findOne({ username: req.params.username }).select('-__v').exec();
+    const targetId = req.params.id;
+    console.log("Frontend fetching profile mapping for id:", targetId);
+    
+    // Support both ID and Username lookup defensively
+    const mongoose = require('mongoose');
+    const query = mongoose.Types.ObjectId.isValid(targetId) ? { _id: targetId } : { username: targetId };
+    
+    const fetchUser = User.findOne(query).select('-__v').exec();
     const user = await Promise.race([
       fetchUser,
       new Promise((_, reject) => setTimeout(() => reject(new Error("MongoDB Client Timeout")), 2000))

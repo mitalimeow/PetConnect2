@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { MapPin, Edit2, Phone, Mail } from 'lucide-react';
+import { MapPin, Edit2, Phone, Mail, CheckCircle } from 'lucide-react';
 import TagBadge from '../components/profile/TagBadge';
 import PostCard from '../components/profile/PostCard';
 import FriendDropdown from '../components/profile/FriendDropdown';
