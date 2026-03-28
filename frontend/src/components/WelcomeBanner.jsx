@@ -1,3 +1,4 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 import React, { useState, useEffect } from 'react';
 
 const WelcomeBanner = () => {
@@ -16,7 +17,7 @@ const WelcomeBanner = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/user/me', {
+        const response = await fetch(`${API_BASE}/api/user/me`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

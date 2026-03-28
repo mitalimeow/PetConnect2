@@ -11,7 +11,11 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/petconnect'
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log('MongoDB Connection Error:', err));
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : ['http://localhost:5173', 'https://petconnect-deploy.vercel.app'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 
 // Routes
@@ -22,8 +26,13 @@ app.use('/api/notifications', require('./routes/notifications'));
 // app.use('/api/events', require('./routes/events')); // Temporarily disabled - file missing from remote
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/pets', require('./routes/petRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/posts', require('./routes/postRoutes'));
+// app.use('/api/users', require('./routes/userRoutes')); // File deleted
+// app.use('/api/posts', require('./routes/postRoutes')); // File deleted
+
+// Root Route for API Health Check
+app.get('/', (req, res) => {
+  res.send('PetConnect API is running successfully! Access the web app through the Vercel frontend URL.');
+});
 
 app.get('/api/user/me', require('./middleware/auth'), async (req, res) => {
   try {

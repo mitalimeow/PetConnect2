@@ -1,3 +1,4 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -16,7 +17,7 @@ const AdminPanel = () => {
   const fetchApplications = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/applications/admin/pending', {
+      const res = await fetch(`${API_BASE}/api/applications/admin/pending`, {
         headers: {
           'Authorization': `Bearer ${user.token}`
         }
@@ -38,7 +39,7 @@ const AdminPanel = () => {
 
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/applications/admin/approve/${id}`, {
+      const res = await fetch(`${API_BASE}/api/applications/admin/approve/${id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${user.token}`

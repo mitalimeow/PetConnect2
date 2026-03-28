@@ -14,7 +14,6 @@ import EducationSection from './pages/Education';
 import Applications from './pages/Applications';
 import AdminPanel from './pages/AdminPanel';
 import Adopt from './pages/Adopt';
-// import Community from './pages/Community';
 
 function App() {
   return (
@@ -37,7 +36,6 @@ function App() {
                 {/* <Route path="/community" element={<Community />} /> */}
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
-                {/* <Route path="/community" element={<Community />} /> */}
               </Routes>
             </main>
           </div>
