@@ -22,7 +22,7 @@ function App() {
         <ClickSpark sparkColor="#FFB7B2" sparkSize={12} sparkRadius={20} sparkCount={10} duration={600}>
           <div className="min-h-screen relative flex flex-col font-body bg-background text-foreground">
             <Navbar />
-            
+
             <main className="flex-1 w-full relative z-10 pt-20">
               <Routes>
                 <Route path="/" element={<Landing />} />
@@ -33,9 +33,9 @@ function App() {
                 <Route path="/lost-found" element={<LostFound />} />
                 <Route path="/education/*" element={<EducationSection />} />
                 <Route path="/helpline" element={<Helpline />} />
+                <Route path="/community" element={<Community />} />
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
-                <Route path="/community" element={<Community />} />
               </Routes>
             </main>
           </div>

@@ -4,7 +4,7 @@ exports.getMe = async (req, res) => {
   try {
     console.log("EXECUTING NATIVE /ME FETCH FOR EMAIL:", req.user.email);
     // Timeout quickly to avoid 10s hangs on Atlas disconnects
-    const fetchUser = User.findOne({ email: req.user.email }).select('-__v').exec();
+    const fetchUser = User.findOne({ email: req.user.email }).select('-__v -password').exec();
     const user = await Promise.race([
       fetchUser,
       new Promise((_, reject) => setTimeout(() => reject(new Error("MongoDB Client Timeout")), 2000))
@@ -35,7 +35,7 @@ exports.getProfileById = async (req, res) => {
     const mongoose = require('mongoose');
     const query = mongoose.Types.ObjectId.isValid(targetId) ? { _id: targetId } : { username: targetId };
     
-    const fetchUser = User.findOne(query).select('-__v').exec();
+    const fetchUser = User.findOne(query).select('-__v -password').exec();
     const user = await Promise.race([
       fetchUser,
       new Promise((_, reject) => setTimeout(() => reject(new Error("MongoDB Client Timeout")), 2000))
@@ -65,6 +65,7 @@ exports.getProfileById = async (req, res) => {
 
     res.json({ profile, isOwner, isFriend, isSelf: isOwner });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -107,5 +108,29 @@ exports.updateProfile = async (req, res) => {
   } catch (err) {
     console.error("PROFILE UPDATE ERROR:", err);
     res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+exports.searchUsers = async (req, res) => {
+  try {
+    const query = req.query.q;
+    if (!query) {
+      return res.json([]);
+    }
+
+    const User = require('../models/User');
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { username: { $regex: query, $options: 'i' } }
+      ]
+    })
+    .select('_id name username profilePhoto')
+    .limit(10);
+
+    res.json(users);
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ message: 'Server error during search' });
   }
 };

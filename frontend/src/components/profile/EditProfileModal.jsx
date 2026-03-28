@@ -1,3 +1,4 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, UploadCloud, Loader2, AlertCircle } from 'lucide-react';
 import Select from 'react-select';
@@ -189,7 +190,7 @@ const EditProfileModal = ({ isOpen, onClose, initialData, onSaveSuccess }) => {
       const userCache = JSON.parse(localStorage.getItem('petconnect_user') || '{}');
       const token = userCache.token;
       
-      const res = await fetch('http://localhost:5000/api/profile/update', {
+      const res = await fetch(`${API_BASE}/api/profile/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(payload)

@@ -1,3 +1,4 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Bell } from 'lucide-react';
@@ -22,7 +23,7 @@ const Navbar = () => {
         }).then(res => res.json());
         
         // Pass info to our backend to generate DB-tied JWT
-        const res = await fetch('http://localhost:5000/api/auth/google', {
+        const res = await fetch(`${API_BASE}/api/auth/google`, {
            method: 'POST',
            headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify({ userInfo })

@@ -1,8 +1,9 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, X, Loader2, Cat } from 'lucide-react';
 import FiltersPanel from '../components/adopt/FiltersPanel';
 import PetCard from '../components/adopt/PetCard';
-import ShelterLocator from '../components/adopt/ShelterLocator';
+// import ShelterLocator from '../components/adopt/ShelterLocator';
 
 const Adopt = () => {
   const [pets, setPets] = useState([]);
@@ -33,7 +34,7 @@ const Adopt = () => {
       if (filtersObj.age !== null && filtersObj.age !== 999) params.append('age', filtersObj.age);
       if (filtersObj.ownerType && filtersObj.ownerType.length > 0) params.append('ownerType', filtersObj.ownerType.join(','));
       
-      const res = await fetch(`http://localhost:5000/api/pets?${params.toString()}`);
+      const res = await fetch(`${API_BASE}/api/pets?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         setPets(data);
@@ -115,7 +116,7 @@ const Adopt = () => {
         {/* Grid Area */}
         {activeTab === 'Shelters' ? (
            <div className="mt-4 min-h-[50vh]">
-              <ShelterLocator searchQuery={searchQuery} />
+              {/* <ShelterLocator searchQuery={searchQuery} /> */}
            </div>
         ) : (
           loading ? (

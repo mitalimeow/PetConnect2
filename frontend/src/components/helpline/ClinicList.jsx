@@ -35,7 +35,6 @@ const ClinicList = ({ clinics, loading, hasMore, onLoadMore }) => {
           </div>
         )}
       </AnimatePresence>
-      
       {hasMore && (
         <div className="p-6 border-t border-gray-50 flex justify-center bg-gray-50/30">
           <button 
