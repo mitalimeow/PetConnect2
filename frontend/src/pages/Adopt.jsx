@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter, X, Loader2, Cat } from 'lucide-react';
 import FiltersPanel from '../components/adopt/FiltersPanel';
 import PetCard from '../components/adopt/PetCard';
-// import ShelterLocator from '../components/adopt/ShelterLocator';
+import ShelterLocator from '../components/adopt/ShelterLocator';
 
 const Adopt = () => {
   const [pets, setPets] = useState([]);
@@ -115,8 +115,8 @@ const Adopt = () => {
 
         {/* Grid Area */}
         {activeTab === 'Shelters' ? (
-           <div className="mt-4 min-h-[50vh]">
-              {/* <ShelterLocator searchQuery={searchQuery} /> */}
+          <div className="mt-4 min-h-[50vh]">
+              <ShelterLocator searchQuery={searchQuery} />
            </div>
         ) : (
           loading ? (

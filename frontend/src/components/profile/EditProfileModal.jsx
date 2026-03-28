@@ -205,16 +205,14 @@ const EditProfileModal = ({ isOpen, onClose, initialData, onSaveSuccess }) => {
         currentCache.name = backendDoc.name;
         currentCache.location = backendDoc.location;
         currentCache.username = backendDoc.username || currentCache.username;
-        // Optionally cache avatar if it was uploaded
-        if (backendDoc.profilePhoto) currentCache.avatar = backendDoc.profilePhoto;
+        // Optionally cache avatar if it was uploaded (Removed to keep Google PFP in top right)
         localStorage.setItem('petconnect_user', JSON.stringify(currentCache));
         
         // Push update to Global React Context so the Navbar live-reloads instantly!
         updateUser({ 
            name: backendDoc.name, 
            location: backendDoc.location,
-           profilePhoto: backendDoc.profilePhoto, 
-           avatar: backendDoc.profilePhoto || currentCache.avatar 
+           profilePhoto: backendDoc.profilePhoto
         });
 
         // Dispatch React DOM Refresh sequence

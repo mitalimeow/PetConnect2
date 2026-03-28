@@ -17,7 +17,6 @@ const UserSchema = new mongoose.Schema({
   isPhonePublic: { type: Boolean, default: false },
   isEmailVisible: { type: Boolean, default: false },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest' }],
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
   role: {
     type: String,

@@ -42,7 +42,7 @@ exports.updateProfile = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       { $set: profileFields },
-      { new: true }
+      { returnDocument: 'after' }
     ).select('-password');
 
     res.json(updatedUser);
@@ -68,13 +68,44 @@ exports.getProfileById = async (req, res) => {
       return res.status(404).json({ message: 'Profile not found' });
     }
 
-    const isOwner = req.user && req.user.id === user._id.toString();
-    const isFriend = req.user && user.friends.includes(req.user.id);
+    let isOwner = false;
+    let isFriend = false;
+    let friendshipStatus = 'none';
+
+    if (req.user) {
+       isOwner = req.user.id === user._id.toString();
+       isFriend = user.friends.includes(req.user.id);
+
+       if (isFriend) {
+          friendshipStatus = 'friends';
+       } else if (!isOwner) {
+          const FriendRequest = require('../models/FriendRequest');
+          const sentRequest = await FriendRequest.findOne({ sender: req.user.id, receiver: user._id, status: 'pending' });
+          if (sentRequest) {
+             friendshipStatus = 'pending_sent';
+          } else {
+             const receivedRequest = await FriendRequest.findOne({ sender: user._id, receiver: req.user.id, status: 'pending' });
+             if (receivedRequest) {
+                friendshipStatus = 'pending_received';
+             }
+          }
+       }
+    }
+
+    // Apply strict privacy settings natively in the payload
+    const profilePayload = user.toObject();
+    profilePayload.handle = profilePayload.username; // ensure 'handle' is available for exact specifications
+
+    if (!isOwner && !isFriend) {
+       profilePayload.email = "Private";
+       profilePayload.phone = "Private";
+    }
 
     res.json({
       isOwner,
       isFriend,
-      profile: user
+      friendshipStatus,
+      profile: profilePayload
     });
 
   } catch (err) {

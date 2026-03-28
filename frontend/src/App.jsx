@@ -9,7 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import LostFound from './pages/LostFound';
 import EducationSection from './pages/Education';
-// import Helpline from './pages/Helpline';
+import Helpline from './pages/Helpline';
 // import Community from './pages/Community';
 import Applications from './pages/Applications';
 import AdminPanel from './pages/AdminPanel';
@@ -32,7 +32,7 @@ function App() {
                 <Route path="/profile/:id" element={<Profile />} />
                 <Route path="/lost-found" element={<LostFound />} />
                 <Route path="/education/*" element={<EducationSection />} />
-                {/* <Route path="/helpline" element={<Helpline />} /> */}
+                <Route path="/helpline" element={<Helpline />} />
                 {/* <Route path="/community" element={<Community />} /> */}
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
