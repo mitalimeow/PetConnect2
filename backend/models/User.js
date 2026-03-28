@@ -8,13 +8,23 @@ const UserSchema = new mongoose.Schema({
   bannerImage: { type: String, default: '' },
   bio: { type: String, default: '' },
   location: { type: String, default: '' },
-  tags: [{ type: String }],
+  tags: [{ 
+    name: { type: String }, 
+    color: { type: String } 
+  }],
+  notifications: [{ type: String }],
   phone: { type: String, default: '' },
   isPhonePublic: { type: Boolean, default: false },
   isEmailVisible: { type: Boolean, default: false },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest' }],
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  role: {
+    type: String,
+    enum: ["user", "admin", "professional"],
+    default: "user"
+  },
+  isVerified: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

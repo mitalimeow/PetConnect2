@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { MapPin, Edit2, Phone, Mail } from 'lucide-react';
 import TagBadge from '../components/profile/TagBadge';
 import PostCard from '../components/profile/PostCard';
@@ -10,9 +10,8 @@ import { useAuth } from '../context/AuthContext';
 const DEFAULT_AVATAR = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
 const Profile = () => {
-  const { username } = useParams();
+  const { id } = useParams();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -34,43 +33,33 @@ const Profile = () => {
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
         
-        // Smart fallback parser securely handling outdated Google LocalStorage architectures
-        const fallbackSlug = userCache.name ? userCache.name.replace(/\s+/g, '-').toLowerCase() : 'mock-user';
-        const targetUsername = username === 'me' ? (userCache.username || fallbackSlug) : username;
-        
-        if (!targetUsername) return;
+        const targetId = id;
+        if (!targetId) return;
 
-        const endpoint = username === 'me' ? 'http://localhost:5000/api/profile/me' : `http://localhost:5000/api/profile/${targetUsername}`;
+        const endpoint = `http://localhost:5000/api/profile/${targetId}`;
         const res = await fetch(`${endpoint}?t=${Date.now()}`, { headers });
         if (res.ok) {
           const data = await res.json();
+          if (data.offlineFallback) {
+             throw new Error("MongoDB Offline - Triggering local cache");
+          }
           setProfileData(data);
         } else {
           // Fallback context if DB isn't populated for this user preview
           setProfileData({
-            isOwner: username === 'me',
+            isOwner: id === userCache.id,
             isFriend: false,
             profile: {
-              name: 'Prisha Raje',
-              username: targetUsername,
-              location: 'Thane',
-              phone: '+91 9594360507',
-              email: 'mitalipaullol268@gmail.com',
-              tags: ['Pet Owner', 'Volunteer'],
+              name: userCache.name || 'New Pet Owner',
+              username: userCache.username || 'user',
+              location: userCache.location || '',
+              phone: '',
+              email: userCache.email || '',
+              tags: [...(userCache.tags || []), { name: 'Community Member', color: '#B5D2CB' }],
               friends: [],
-              bannerImage: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1600&q=80',
-              profilePhoto: DEFAULT_AVATAR,
-              posts: [
-                {
-                  _id: 'mock1',
-                  timeAgo: '5 days ago',
-                  author: {
-                    name: 'Prisha Raje',
-                    profilePhoto: DEFAULT_AVATAR,
-                    tags: ['Pet Owner', 'Volunteer']
-                  }
-                }
-              ]
+              bannerImage: '',
+              profilePhoto: userCache.avatar || DEFAULT_AVATAR,
+              posts: []
             }
           });
         }
@@ -82,7 +71,7 @@ const Profile = () => {
     };
     
     fetchProfile();
-  }, [username, user, refreshTrigger]);
+  }, [id, user, refreshTrigger]);
 
   const handleAddFriend = async () => {
     try {
@@ -104,8 +93,8 @@ const Profile = () => {
 
   const { profile, isOwner, isFriend } = profileData;
 
-  const displayPhone = (isOwner || isFriend) ? profile.phone : "Private (Friends Only)";
-  const displayEmail = (isOwner || isFriend) ? profile.email : "Private (Friends Only)";
+  const displayPhone = profile.phone ? ((isOwner || isFriend || profile.isPhonePublic) ? profile.phone : "Private") : null;
+  const displayEmail = profile.email ? ((isOwner || isFriend || profile.isEmailVisible) ? profile.email : "Private") : null;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 mb-20">
@@ -150,8 +139,16 @@ const Profile = () => {
               )}
             </div>
 
+            {profile.username && (
+               <p className="text-pastel-blue font-bold text-lg mt-2 tracking-wide">
+                  @{profile.username}
+               </p>
+            )}
+
             <div className="flex flex-wrap gap-2 mt-4">
-              {profile.tags && profile.tags.map(tag => <TagBadge key={tag} tag={tag} />)}
+              {profile.tags && Array.from(new Set(profile.tags.map(t => typeof t === 'object' ? t.name : t))).map((tagName, i) => (
+                 <TagBadge key={i} tag={tagName} />
+              ))}
             </div>
 
             {profile.location && (
@@ -178,14 +175,18 @@ const Profile = () => {
             ))}
 
             <div className="text-left md:text-right mt-4 flex flex-col gap-2 w-full md:w-auto">
-              <div className="flex items-center justify-start md:justify-end gap-2 text-gray-800 font-bold tracking-wide">
-                <Phone size={16} className="text-gray-400" />
-                {displayPhone}
-              </div>
-              <div className="flex items-center justify-start md:justify-end gap-2 text-blue-500 font-medium cursor-pointer hover:underline">
-                <Mail size={16} className="text-blue-400" />
-                {displayEmail}
-              </div>
+              {displayPhone && (
+                <div className="flex items-center justify-start md:justify-end gap-2 text-gray-800 font-bold tracking-wide">
+                  <Phone size={16} className="text-gray-400" />
+                  {displayPhone}
+                </div>
+              )}
+              {displayEmail && (
+                <div className="flex items-center justify-start md:justify-end gap-2 text-blue-500 font-medium cursor-pointer hover:underline">
+                  <Mail size={16} className="text-blue-400" />
+                  {displayEmail}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -201,7 +202,7 @@ const Profile = () => {
           </div>
         ) : (
           <div className="bg-white rounded-[20px] p-8 text-center text-gray-500 border border-gray-100 shadow-sm">
-            {profile.name} hasn't posted anything yet.
+            {isOwner ? "You haven't made any posts." : `${profile.name} hasn't posted anything yet.`}
           </div>
         )}
       </div>
