@@ -34,10 +34,10 @@ const Profile = () => {
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
         
-        const targetUsername = username;
+        const targetUsername = id;
         if (!targetUsername) return;
 
-        const endpoint = username === 'me' ? `${API_BASE}/api/profile/me` : `${API_BASE}/api/profile/${targetUsername}`;
+        const endpoint = id === 'me' ? `${API_BASE}/api/profile/me` : `${API_BASE}/api/profile/${targetUsername}`;
         const res = await fetch(`${endpoint}?t=${Date.now()}`, { headers });
         if (res.ok) {
           const data = await res.json();
