@@ -105,7 +105,9 @@ const Helpline = () => {
       }
 
       const API_KEY = import.meta.env.VITE_TOMTOM_API_KEY;
-      if (!API_KEY) throw new Error("Missing VITE_TOMTOM_API_KEY");
+      if (!API_KEY || API_KEY === "placeholder_key_replace_me" || API_KEY.startsWith("your_")) {
+        throw new Error("Missing VITE_TOMTOM_API_KEY");
+      }
       
       if (API_KEY.includes('...') || API_KEY.length < 20) {
         throw new Error("VITE_TOMTOM_API_KEY_FORMAT_INVALID");
@@ -160,11 +162,14 @@ const Helpline = () => {
     } catch(err) {
       if (err.name === 'AbortError') return;
       console.error("[Diagnostic] Fatal Error:", err);
-      if (err.message === "VITE_TOMTOM_API_KEY_FORMAT_INVALID") {
-        setErrorMsg('Invalid API Key Detected - Please check .env formatting.');
+      if (err.message === "Missing VITE_TOMTOM_API_KEY") {
+        setErrorMsg('VITE_TOMTOM_API_KEY is not configured in .env. Please check your configuration.');
+      } else if (err.message === "VITE_TOMTOM_API_KEY_FORMAT_INVALID") {
+        setErrorMsg('Invalid TomTom API key detected. Please check your .env file.');
       } else {
         setErrorMsg(`We're having trouble reaching the clinic database. Please try again later.`);
       }
+      setClinics([]);
     } finally {
       console.groupEnd();
       setLoading(false);

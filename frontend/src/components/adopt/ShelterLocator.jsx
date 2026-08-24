@@ -36,6 +36,45 @@ const mapTomTomData = (poiData) => {
   };
 };
 
+const MOCK_SHELTERS = [
+  {
+    id: "mock-shelter-1",
+    name: "Happy Paws Rescue Shelter (Mock)",
+    phone: "+91 22 2640 9999",
+    address: "Carter Road Promenade, Bandra West",
+    municipality: "Mumbai",
+    lat: 19.0640,
+    lng: 72.8257,
+    specialties: [],
+    isOpen: true,
+    is247: false
+  },
+  {
+    id: "mock-shelter-2",
+    name: "Save Our Strays Center (Mock)",
+    phone: "+91 22 2510 8888",
+    address: "Lokhandwala Complex, Andheri West",
+    municipality: "Mumbai",
+    lat: 19.1380,
+    lng: 72.8257,
+    specialties: [],
+    isOpen: true,
+    is247: true
+  },
+  {
+    id: "mock-shelter-3",
+    name: "Mumbai Animal Sanctuary (Mock)",
+    phone: "+91 22 2890 7777",
+    address: "Vikhroli Parksite, Ghatkopar West",
+    municipality: "Mumbai",
+    lat: 19.0880,
+    lng: 72.8657,
+    specialties: [],
+    isOpen: false,
+    is247: false
+  }
+];
+
 const ShelterLocator = ({ searchQuery = "" }) => {
   const [userLoc, setUserLoc] = useState({ lat: 19.0760, lng: 72.8777 }); 
   const [shelters, setShelters] = useState([]);
@@ -83,7 +122,9 @@ const ShelterLocator = ({ searchQuery = "" }) => {
       }
 
       const API_KEY = import.meta.env.VITE_TOMTOM_API_KEY;
-      if (!API_KEY) throw new Error("Missing VITE_TOMTOM_API_KEY");
+      if (!API_KEY || API_KEY === "placeholder_key_replace_me" || API_KEY.startsWith("your_")) {
+        throw new Error("Missing VITE_TOMTOM_API_KEY");
+      }
       
       const fetchWithRadius = async (radius) => {
         const queryTerm = searchQuery || 'animal shelter';
@@ -130,11 +171,28 @@ const ShelterLocator = ({ searchQuery = "" }) => {
       if (err.name === 'AbortError') return;
       console.error(err);
       if (err.message === "Missing VITE_TOMTOM_API_KEY") {
-        setErrorMsg('Invalid API Key Detected - Please check .env formatting.');
+        setErrorMsg('VITE_TOMTOM_API_KEY is not configured in .env. Showing local mock shelters for demonstration purposes.');
+        const activeShelters = MOCK_SHELTERS.map(c => ({
+          ...c,
+          lat: lat + (c.lat - 19.0760) * 0.1,
+          lng: lng + (c.lng - 72.8777) * 0.1,
+        })).map(c => ({
+          ...c,
+          distance: getDistance(lat, lng, c.lat, c.lng)
+        })).sort((a,b) => a.distance - b.distance);
+        setShelters(activeShelters);
       } else {
-        setErrorMsg(`We're having trouble reaching the shelter database.`);
+        setErrorMsg(`We're having trouble reaching the shelter database. Showing local mock shelters.`);
+        const activeShelters = MOCK_SHELTERS.map(c => ({
+          ...c,
+          lat: lat + (c.lat - 19.0760) * 0.1,
+          lng: lng + (c.lng - 72.8777) * 0.1,
+        })).map(c => ({
+          ...c,
+          distance: getDistance(lat, lng, c.lat, c.lng)
+        })).sort((a,b) => a.distance - b.distance);
+        setShelters(activeShelters);
       }
-      setShelters([]);
     } finally {
       setLoading(false);
     }

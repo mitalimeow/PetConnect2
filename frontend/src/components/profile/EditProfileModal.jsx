@@ -5,20 +5,8 @@ import Select from 'react-select';
 import { useAuth } from '../../context/AuthContext';
 
 // Firebase
-import { initializeApp } from "firebase/app";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-
-// Firebase initialization mapping directly from prompt constraint
-const firebaseConfig = {
-  apiKey: "AIzaSyBdWNhDkVvY6X0Z9823YhZ2qBW8Hs57eKM",
-  authDomain: "petconnect-491321.firebaseapp.com",
-  projectId: "petconnect-491321",
-  storageBucket: "petconnect-491321.firebasestorage.app",
-  messagingSenderId: "218392211032",
-  appId: "1:218392211032:web:0e8d60605afe55b021242d"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 
 const TAGS = [
   { name: "Volunteer" },

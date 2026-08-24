@@ -26,19 +26,14 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/pets', require('./routes/petRoutes'));
-<<<<<<< HEAD
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
 app.use('/api/reports', require('./routes/lostFoundRoutes'));
-=======
-// app.use('/api/users', require('./routes/userRoutes')); // File deleted
-// app.use('/api/posts', require('./routes/postRoutes')); // File deleted
 
 // Root Route for API Health Check
 app.get('/', (req, res) => {
   res.send('PetConnect API is running successfully! Access the web app through the Vercel frontend URL.');
 });
->>>>>>> d5c2d4f8f26d1e93eb9d54255540adb74f3e08ed
 
 app.get('/api/user/me', require('./middleware/auth'), async (req, res) => {
   try {
